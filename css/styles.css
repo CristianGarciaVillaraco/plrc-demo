@@ -1236,3 +1236,17 @@ textarea.input { resize: vertical; }
   gap: 8px;
   margin-top: 4px;
 }
+
+/* ── Demo banner ─────────────────────────────────────────────────────────── */
+.demo-banner {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #FEF3C7;
+  color: #92400E;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-bottom: 1px solid #FCD34D;
+}
