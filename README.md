@@ -4,6 +4,18 @@ Offline-first PWA to generate invoices and quotes as PDF, directly in the browse
 
 Built as a real production tool for a freelance business. This repository is a public demo with fictional company data.
 
+**[Live demo →](https://cristiangarciavillaraco.github.io/plrc-demo/)**
+
+## Screenshots
+
+| List | New invoice | Preview |
+|---|---|---|
+| ![List](docs/screenshots/01-list-empty.png) | ![Form](docs/screenshots/02-new-invoice.png) | ![Preview](docs/screenshots/03-preview.png) |
+
+| List with documents | Mobile |
+|---|---|
+| ![List with docs](docs/screenshots/04-list-with-docs.png) | ![Mobile](docs/screenshots/05-mobile-list.png) |
+
 ## Features
 
 - Create and manage invoices (`F-YYYY-NNN`) and quotes (`P-YYYY-NNN`)
