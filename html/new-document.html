@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nuevo documento — Invoice Generator</title>
+  <link rel="manifest" href="../manifest.json" />
+  <meta name="theme-color" content="#2563EB" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="InvGen" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="../icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- PC sidebar (dark) -->
+    <aside class="sidebar desktop-only">
+      <div class="sidebar__brand">
+        <div class="sidebar__brand-left">
+          <div class="sidebar__brand-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <span class="sidebar__brand-name">InvGen</span>
+        </div>
+      </div>
+      <nav class="sidebar__nav">
+        <div class="sidebar-nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>Documentos</span>
+        </div>
+      </nav>
+      <div class="sidebar__footer"></div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="form-shell">
+      <header class="form-topbar">
+        <div class="form-topbar__left">
+          <button class="form-topbar__back" id="btn-back" aria-label="Atrás">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <h1 class="form-topbar__title" id="page-title">Nueva factura</h1>
+        </div>
+        <button class="form-topbar__cancel" onclick="document.getElementById('btn-back').click()">Cancelar</button>
+      </header>
+
+      <div class="form-layout">
+        <form id="invoice-form" novalidate>
+          <div class="form-area">
+
+            <!-- Cliente -->
+            <div class="form-card form-card--client">
+              <p class="form-card__title">CLIENTE</p>
+              <div class="form-group">
+                <label class="form-label" for="clientName">Nombre / Razón social</label>
+                <input class="input" type="text" id="clientName" name="clientName" placeholder="Empresa S.L." required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="clientNif">NIF / CIF <span class="form-hint">(opcional)</span></label>
+                <input class="input" type="text" id="clientNif" name="clientNif" placeholder="B12345678" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="clientAddress">Dirección <span class="form-hint">(opcional)</span></label>
+                <textarea class="input" id="clientAddress" name="clientAddress" rows="2" placeholder="Calle, número, ciudad"></textarea>
+              </div>
+            </div>
+
+            <!-- Documento (número + fechas) -->
+            <div class="form-card form-card--invoice" id="group-number">
+              <p class="form-card__title" id="section-label-meta">Factura</p>
+              <div class="form-group">
+                <label class="form-label" id="label-number" for="number">Número</label>
+                <input class="input" type="text" id="number" name="number" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="issueDate">Fecha emisión</label>
+                  <input class="input" type="date" id="issueDate" name="issueDate" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="dueDate">Vencimiento</label>
+                  <input class="input" type="date" id="dueDate" name="dueDate" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Concepto -->
+            <div class="form-card form-card--concepto">
+              <p class="form-card__title">CONCEPTO</p>
+              <div class="items-table" id="items-table">
+                <div class="items-header">
+                  <span class="items-col--desc">Descripción</span>
+                  <span class="items-col--qty">Cant.</span>
+                  <span class="items-col--price">Precio u.</span>
+                  <span class="items-col--sub">Subtotal</span>
+                  <span class="items-col--del"></span>
+                </div>
+                <div id="items-body"></div>
+              </div>
+              <button type="button" class="btn btn--outline btn--full" id="btn-add-item">+ Añadir línea</button>
+            </div>
+
+            <!-- Cálculo -->
+            <div class="form-card form-card--calc">
+              <p class="form-card__title">CÁLCULO</p>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="vatRate">IVA (%)</label>
+                  <input class="input" type="number" id="vatRate" name="vatRate" min="0" max="100" step="0.1" value="21" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="irpfRate">IRPF (%)</label>
+                  <input class="input" type="number" id="irpfRate" name="irpfRate" min="0" max="100" step="0.1" value="15" />
+                </div>
+              </div>
+              <div class="totals-preview" id="totals-preview">
+                <div class="totals-row"><span>Base</span><span id="preview-base">0,00 €</span></div>
+                <div class="totals-row"><span>IVA</span><span id="preview-vat">0,00 €</span></div>
+                <div class="totals-row"><span>IRPF</span><span id="preview-irpf">0,00 €</span></div>
+                <div class="totals-row totals-row--total"><span>Total</span><span id="preview-total">0,00 €</span></div>
+              </div>
+            </div>
+
+            <!-- Pago (facturas only) -->
+            <div class="form-card form-card--pago" id="section-payment">
+              <p class="form-card__title">PAGO</p>
+              <div class="form-group">
+                <label class="form-label" for="paymentMethod">Forma de pago</label>
+                <input class="input" type="text" id="paymentMethod" name="paymentMethod" placeholder="Transferencia bancaria" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="iban">IBAN <span class="form-hint">(opcional)</span></label>
+                <input class="input" type="text" id="iban" name="iban" placeholder="ES00 0000 0000 00 0000000000" />
+              </div>
+            </div>
+
+            <!-- Notas -->
+            <div class="form-card form-card--notes">
+              <p class="form-card__title">NOTAS</p>
+              <div class="form-group">
+                <label class="form-label" for="notes">Notas adicionales <span class="form-hint">(opcional)</span></label>
+                <textarea class="input" id="notes" name="notes" rows="3" placeholder="Condiciones, referencias, etc."></textarea>
+              </div>
+            </div>
+
+            <!-- Guardar: fixed en mobile, columna derecha en PC -->
+            <div class="form-card--actions">
+              <button type="submit" class="btn btn--primary btn--full form-submit-btn" id="btn-save">Crear factura</button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.min.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/utils/constants.js"></script>
+  <script src="../js/utils/format.js"></script>
+  <script src="../js/sync-config.js"></script>
+  <script src="../js/cloudflare.js"></script>
+  <script src="../js/pages/new-document.js"></script>
+</body>
+</html>

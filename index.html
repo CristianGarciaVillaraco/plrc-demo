@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentos — Invoice Generator</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#2563EB" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="InvGen" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- PC sidebar (dark) -->
+    <aside class="sidebar desktop-only">
+      <div class="sidebar__brand">
+        <div class="sidebar__brand-left">
+          <div class="sidebar__brand-icon">P</div>
+          <span class="sidebar__brand-name">InvGen</span>
+        </div>
+      </div>
+      <nav class="sidebar__nav">
+        <div class="sidebar-nav-item sidebar-nav-item--active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>Documentos</span>
+        </div>
+        <button class="sidebar-nav-item" id="btn-export-sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Exportar</span>
+        </button>
+      </nav>
+      <div class="sidebar__footer"></div>
+    </aside>
+
+    <div class="main-wrapper">
+      <!-- No-internet strip (4px red line) -->
+      <div class="sync-strip" id="sync-strip"></div>
+
+      <!-- List topbar: title + new button (visible on both mobile and PC) -->
+      <div class="list-topbar">
+        <h2 class="list-topbar__title" id="list-title">Facturas</h2>
+        <button class="btn-icon mobile-only" id="btn-export-mobile" aria-label="Exportar backup">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </button>
+        <button class="btn btn--primary list-topbar__btn desktop-only" id="btn-new-desktop">+ Nueva factura</button>
+      </div>
+
+      <!-- Pill tab bar (both mobile and PC) -->
+      <nav class="tab-bar">
+        <div class="tab-bar__inner">
+          <button class="tab tab--active" data-type="invoice">Facturas</button>
+          <button class="tab" data-type="quote">Presupuestos</button>
+        </div>
+      </nav>
+
+      <main class="list-main">
+        <!-- Stats -->
+        <div class="stats-grid" id="stats-grid"></div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+          <input class="input filter-search" type="search" id="filter-search" placeholder="Buscar…" />
+          <div class="month-dropdown" id="month-dropdown">
+            <button class="input month-dropdown__trigger" id="month-trigger">Todos los meses</button>
+            <div class="month-dropdown__panel" id="month-panel" hidden></div>
+          </div>
+          <div class="status-pills" id="status-pills"></div>
+        </div>
+
+        <!-- Document list -->
+        <div id="doc-list" class="doc-list"></div>
+        <div id="empty-state" class="empty-state" hidden>
+          <p id="empty-text">No hay documentos todavía.</p>
+          <p>Pulsa <strong>+</strong> para crear uno.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- FAB (mobile) -->
+  <button class="fab mobile-only" id="fab-new" aria-label="New document">+</button>
+
+  <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.min.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/utils/constants.js"></script>
+  <script src="js/utils/format.js"></script>
+  <script src="js/sync-config.js"></script>
+  <script src="js/cloudflare.js"></script>
+  <script src="js/pages/list.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      if (location.hostname === 'localhost') {
+        navigator.serviceWorker.getRegistrations().then(regs => {
+          if (regs.length > 0) {
+            Promise.all(regs.map(r => r.unregister())).then(() => location.reload());
+          }
+        });
+      } else {
+        navigator.serviceWorker.register('./sw.js');
+      }
+    }
+  </script>
+</body>
+</html>

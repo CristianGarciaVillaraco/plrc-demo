@@ -1,0 +1,13 @@
+{
+  "name": "invoice-generator",
+  "version": "1.0.0",
+  "description": "Offline-first PWA to generate invoices and quotes as PDF",
+  "scripts": {
+    "test": "node --test test/db.test.js",
+    "test:e2e": "npx playwright test",
+    "dev": "node dev-server.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

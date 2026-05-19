@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vista previa — Invoice Generator</title>
+  <link rel="manifest" href="../manifest.json" />
+  <meta name="theme-color" content="#2563EB" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="InvGen" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="../icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <header class="topbar topbar--back">
+    <button class="btn-back" id="btn-back" aria-label="Back">&#8592;</button>
+    <h1 class="topbar__title" id="invoice-number">Documento</h1>
+    <span class="topbar__spacer"></span>
+  </header>
+
+  <main class="preview-page">
+
+    <!-- Document preview -->
+    <div class="invoice-doc card" id="invoice-doc">
+      <div class="doc-header">
+        <div>
+          <div class="doc-header__title" id="doc-title">FACTURA</div>
+          <div class="doc-header__number" id="doc-number"></div>
+        </div>
+        <div class="doc-header__right" id="doc-dates"></div>
+      </div>
+
+      <div class="doc-client" id="doc-client"></div>
+
+      <div class="doc-description" id="doc-description"></div>
+
+      <div class="doc-totals" id="doc-totals"></div>
+
+      <div class="doc-notes" id="doc-notes" hidden></div>
+    </div>
+
+    <!-- Status -->
+    <div class="card status-section">
+      <p class="section-label">Estado</p>
+      <div id="status-badge"></div>
+      <div class="status-buttons" id="status-buttons"></div>
+    </div>
+
+    <!-- Template selector -->
+    <div class="card template-selector">
+      <p class="section-label">Plantilla</p>
+      <div class="template-buttons">
+        <button class="btn btn--outline template-btn template-btn--active" data-template="classic">Clásica</button>
+        <button class="btn btn--outline template-btn" data-template="modern">Moderna</button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="preview-actions">
+      <button class="btn btn--outline" id="btn-edit">Editar</button>
+      <button class="btn btn--primary" id="btn-download">Descargar PDF</button>
+    </div>
+
+    <div class="preview-actions">
+      <button class="btn btn--outline btn--full" id="btn-share" hidden>Compartir</button>
+    </div>
+
+  </main>
+
+  <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.min.js"></script>
+  <script src="https://unpkg.com/pdfmake@0.2.10/build/pdfmake.min.js"></script>
+  <script src="https://unpkg.com/pdfmake@0.2.10/build/vfs_fonts.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/utils/constants.js"></script>
+  <script src="../js/utils/format.js"></script>
+  <script src="../js/utils/pdf.js"></script>
+  <script src="../js/sync-config.js"></script>
+  <script src="../js/company-config.js"></script>
+  <script src="../js/cloudflare.js"></script>
+  <script src="../js/pages/preview.js"></script>
+</body>
+</html>
