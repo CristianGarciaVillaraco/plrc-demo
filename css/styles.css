@@ -1662,5 +1662,6 @@ body:has(.demo-banner) {
   height: 100vh;
   overflow: hidden;
 }
-body:has(.demo-banner) .app-shell { height: auto; flex: 1; min-height: 0; }
-body:has(.demo-banner) .sidebar   { height: auto; }
+body:has(.demo-banner) .app-shell     { height: auto; flex: 1; min-height: 0; }
+body:has(.demo-banner) .sidebar       { height: auto; }
+body:has(.demo-banner) .preview-shell { height: auto; flex: 1; min-height: 0; }
