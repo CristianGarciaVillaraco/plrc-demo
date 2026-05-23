@@ -1181,6 +1181,7 @@ button.sidebar-nav-item:last-child {
 }
 .items-toolbar__btn--active        { color: #DC2626; border-color: #DC2626; background: #FEF2F2; }
 .items-toolbar__btn--cancel        { color: var(--text-secondary); }
+#btn-delete-mode                   { display: none; }
 
 /* ── PC overrides (≥ 768px) ──────────────────────────────────────────────────── */
 @media (min-width: 768px) {

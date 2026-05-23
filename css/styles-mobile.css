@@ -3,30 +3,29 @@
    Para estilos compartidos PC/móvil → styles.css
 ────────────────────────────────────────────────────────────────────────────── */
 
-/* Ocultar papelera de modo borrado en PC */
-#btn-delete-mode { display: none; }
-
-/* ── Stats section (móvil) ───────────────────────────────────────────────────── */
-.stats-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  background: none;
-  border: none;
-  border-bottom: var(--border-width) solid transparent;
-  padding: 10px 14px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-.stats-toggle__chevron                     { transition: transform 0.2s; }
-.stats-toggle--open                        { border-bottom-color: var(--border); }
-.stats-toggle--open .stats-toggle__chevron { transform: rotate(180deg); }
-
 /* ── Overrides generales (< 768px) ──────────────────────────────────────────── */
 @media (max-width: 767px) {
+  #btn-delete-mode { display: flex; }
+
+  /* Stats section (móvil) */
+  .stats-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: var(--border-width) solid transparent;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+  .stats-toggle__chevron                     { transition: transform 0.2s; }
+  .stats-toggle--open                        { border-bottom-color: var(--border); }
+  .stats-toggle--open .stats-toggle__chevron { transform: rotate(180deg); }
+
   /* Stats section container */
   .stats-section             { background: var(--bg-card); border: var(--border-width) solid var(--border);
                                border-radius: 12px; margin-bottom: 8px; overflow: hidden; }
