@@ -26,18 +26,19 @@ async function run() {
   // 2. New invoice form (filled)
   await page.goto(`${BASE}/html/new-document.html`);
   await page.waitForLoadState('networkidle');
-  await page.fill('#clientName',    'Empresa Ejemplo S.L.');
-  await page.fill('#clientNif',     'B12345678');
-  await page.fill('#clientAddress', 'Calle Mayor 1\n50001, Zaragoza');
-  await page.fill('#issueDate',     '2026-05-19');
-  await page.fill('#dueDate',       '2026-06-19');
+  await page.fill('#clientName',         'Empresa Ejemplo S.L.');
+  await page.fill('#clientNif',          'B12345678');
+  await page.fill('#clientStreetNumber', '1');
+  await page.fill('#clientStreetName',   'Calle Mayor');
+  await page.fill('#clientCp',           '50001');
+  await page.fill('#clientCity',         'Zaragoza');
+  await page.fill('#clientPhone',        '976 00 00 00');
+  // add item inline (desktop behaviour)
+  await page.click('#btn-add-item');
+  await page.waitForSelector('[name="item-desc-0"]');
   await page.fill('[name="item-desc-0"]',  'Pintura interior vivienda');
   await page.fill('[name="item-qty-0"]',   '1');
   await page.fill('[name="item-price-0"]', '1200');
-  await page.fill('#vatRate',  '21');
-  await page.fill('#irpfRate', '15');
-  await page.fill('#paymentMethod', 'Transferencia bancaria');
-  await page.fill('#iban', 'ES91 2100 0418 4502 0005 1332');
   await page.screenshot({ path: `${OUT}/02-new-invoice.png`, fullPage: false });
 
   // 3. Preview (save + screenshot)
