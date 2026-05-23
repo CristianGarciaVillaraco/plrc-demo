@@ -33,6 +33,20 @@ db.version(4).stores({
   });
 });
 
+// v5: structured client address fields + phone (replaces free-text clientAddress)
+db.version(5).stores({
+  invoices: '++id, number, status, type, createdAt'
+}).upgrade(tx => {
+  return tx.table('invoices').toCollection().modify(doc => {
+    if (doc.clientStreetType   === undefined) doc.clientStreetType   = 'Calle';
+    if (doc.clientStreetName   === undefined) doc.clientStreetName   = '';
+    if (doc.clientStreetNumber === undefined) doc.clientStreetNumber = '';
+    if (doc.clientCp           === undefined) doc.clientCp           = '';
+    if (doc.clientCity         === undefined) doc.clientCity         = '';
+    if (doc.clientPhone        === undefined) doc.clientPhone        = '';
+  });
+});
+
 // ── Document numbering ────────────────────────────────────────────────────────
 
 /** Generate next invoice number for the current year: "F-YYYY-NNN" */
