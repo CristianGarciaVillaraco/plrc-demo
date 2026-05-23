@@ -1641,6 +1641,9 @@ button.sidebar-nav-item:last-child {
 }
 
 /* ── Demo banner ─────────────────────────────────────────────────────────── */
+/* Banner height is fixed so containers can subtract it with calc() */
+:root { --demo-banner-h: 31px; }
+
 .demo-banner {
   position: sticky;
   top: 0;
@@ -1652,16 +1655,11 @@ button.sidebar-nav-item:last-child {
   font-weight: 500;
   padding: 6px 16px;
   border-bottom: 1px solid #FCD34D;
-  flex-shrink: 0;
+  height: var(--demo-banner-h);
+  box-sizing: border-box;
 }
 
-/* Banner present: body is a flex column so app-shell fills remaining height */
-body:has(.demo-banner) {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
-body:has(.demo-banner) .app-shell     { height: auto; flex: 1; min-height: 0; }
-body:has(.demo-banner) .sidebar       { height: auto; }
-body:has(.demo-banner) .preview-shell { height: auto; flex: 1; min-height: 0; }
+/* Shrink fixed-height containers so they don't overflow below the banner */
+body:has(.demo-banner) .app-shell     { height: calc(100vh - var(--demo-banner-h)); }
+body:has(.demo-banner) .sidebar       { height: calc(100vh - var(--demo-banner-h)); }
+body:has(.demo-banner) .preview-shell { height: calc(100vh - var(--demo-banner-h)); }
