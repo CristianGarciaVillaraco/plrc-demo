@@ -1652,4 +1652,15 @@ button.sidebar-nav-item:last-child {
   font-weight: 500;
   padding: 6px 16px;
   border-bottom: 1px solid #FCD34D;
+  flex-shrink: 0;
 }
+
+/* Banner present: body is a flex column so app-shell fills remaining height */
+body:has(.demo-banner) {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+body:has(.demo-banner) .app-shell { height: auto; flex: 1; min-height: 0; }
+body:has(.demo-banner) .sidebar   { height: auto; }
