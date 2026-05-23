@@ -1,10 +1,6 @@
-const CACHE = 'plrc-v8';
+const CACHE = 'plrc-v9';
 const PRECACHE = [
-  './',
-  './index.html',
   './manifest.json',
-  './html/new-document.html',
-  './html/preview.html',
   './css/styles.css',
   './css/styles-mobile.css',
   './js/db.js',
@@ -26,7 +22,6 @@ const PRECACHE = [
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE).then(cache => {
-      // Cache each URL individually so one failure doesn't block the rest
       return Promise.allSettled(PRECACHE.map(url => cache.add(url)));
     })
   );
@@ -43,13 +38,13 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Only handle GET requests
   if (e.request.method !== 'GET') return;
+  // Let the browser handle page navigations directly (no SW interception)
+  if (e.request.mode === 'navigate') return;
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
       return fetch(e.request, { redirect: 'follow' }).then(response => {
-        // Don't cache opaque or error responses
         if (!response || response.status !== 200 || response.type === 'opaque') {
           return response;
         }
