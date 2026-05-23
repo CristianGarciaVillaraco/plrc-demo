@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Documentos — Invoice Generator</title>
+  <title>Documentos — PLRC</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#2563EB" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="InvGen" />
+  <meta name="apple-mobile-web-app-title" content="PLRC" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles-mobile.css" />
 </head>
 <body>
   <div class="demo-banner">⚠ Demo — datos ficticios · <a href="https://github.com/CristianGarciaVillaraco/plrc-demo" target="_blank" rel="noopener" style="color:inherit;font-weight:600">Ver código</a></div>
@@ -21,8 +22,12 @@
     <aside class="sidebar desktop-only">
       <div class="sidebar__brand">
         <div class="sidebar__brand-left">
-          <div class="sidebar__brand-icon">P</div>
-          <span class="sidebar__brand-name">InvGen</span>
+          <div class="sidebar__brand-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2c0 0-8 9.5-8 14a8 8 0 0 0 16 0c0-4.5-8-14-8-14z"/>
+            </svg>
+          </div>
+          <span class="sidebar__brand-name">PLRC</span>
         </div>
       </div>
       <nav class="sidebar__nav">
@@ -52,48 +57,74 @@
       <!-- No-internet strip (4px red line) -->
       <div class="sync-strip" id="sync-strip"></div>
 
-      <!-- List topbar: title + new button (visible on both mobile and PC) -->
+      <!-- Topbar: tabs (izquierda) + acciones (derecha) -->
       <div class="list-topbar">
-        <h2 class="list-topbar__title" id="list-title">Facturas</h2>
-        <button class="btn-icon mobile-only" id="btn-export-mobile" aria-label="Exportar backup">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-        </button>
-        <button class="btn btn--primary list-topbar__btn desktop-only" id="btn-new-desktop">+ Nueva factura</button>
-      </div>
-
-      <!-- Pill tab bar (both mobile and PC) -->
-      <nav class="tab-bar">
-        <div class="tab-bar__inner">
-          <button class="tab tab--active" data-type="invoice">Facturas</button>
-          <button class="tab" data-type="quote">Presupuestos</button>
+        <nav class="tab-bar">
+          <div class="tab-bar__inner">
+            <button class="tab tab--active" data-type="invoice">Facturas</button>
+            <button class="tab" data-type="quote">Presupuestos</button>
+          </div>
+        </nav>
+        <div class="list-topbar__actions">
+          <button class="btn-icon mobile-only" id="btn-export-mobile" aria-label="Exportar backup">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </button>
+          <button class="btn btn--primary list-topbar__btn desktop-only" id="btn-new-desktop">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span id="btn-new-label">Nueva factura</span>
+          </button>
         </div>
-      </nav>
+      </div>
 
       <main class="list-main">
         <!-- Stats -->
-        <div class="stats-grid" id="stats-grid"></div>
-
-        <!-- Filters -->
-        <div class="filter-bar">
-          <input class="input filter-search" type="search" id="filter-search" placeholder="Buscar…" />
-          <div class="month-dropdown" id="month-dropdown">
-            <button class="input month-dropdown__trigger" id="month-trigger">Todos los meses</button>
-            <div class="month-dropdown__panel" id="month-panel" hidden></div>
-          </div>
-          <div class="status-pills" id="status-pills"></div>
+        <div class="stats-section" id="stats-section">
+          <button class="stats-toggle mobile-only" id="stats-toggle" aria-expanded="false">
+            <span>Resumen</span>
+            <svg class="stats-toggle__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="stats-grid" id="stats-grid"></div>
         </div>
 
-        <!-- Document list -->
-        <div id="doc-list" class="doc-list"></div>
-        <div id="empty-state" class="empty-state" hidden>
-          <p id="empty-text">No hay documentos todavía.</p>
-          <p>Pulsa <strong>+</strong> para crear uno.</p>
+        <div class="list-card">
+          <!-- Filters -->
+          <div class="filter-bar">
+            <input class="input filter-search" type="search" id="filter-search" placeholder="Buscar…" />
+            <div class="year-dropdown" id="year-dropdown">
+              <button class="input year-dropdown__trigger" id="year-trigger">2026</button>
+              <div class="year-dropdown__panel" id="year-panel" hidden></div>
+            </div>
+            <div class="month-dropdown" id="month-dropdown">
+              <button class="input month-dropdown__trigger" id="month-trigger">Todos los meses</button>
+              <div class="month-dropdown__panel" id="month-panel" hidden></div>
+            </div>
+            <div class="status-pills" id="status-pills"></div>
+          </div>
+
+          <!-- Document list -->
+          <div id="doc-list" class="doc-list"></div>
+          <div id="empty-state" class="empty-state" hidden>
+            <p id="empty-text">No hay documentos todavía.</p>
+            <p>Pulsa <strong>+</strong> para crear uno.</p>
+          </div>
         </div>
       </main>
+    </div>
+  </div>
+
+  <!-- Delete confirmation modal -->
+  <div class="modal-overlay" id="delete-modal" hidden>
+    <div class="modal-box">
+      <h2 class="modal-title">Eliminar documento</h2>
+      <p class="modal-body">¿Seguro que quieres eliminar <strong id="delete-modal-doc"></strong>? Esta acción no se puede deshacer.</p>
+      <div class="modal-actions">
+        <button class="btn btn--outline" id="delete-modal-cancel">Cancelar</button>
+        <button class="btn btn--primary" id="delete-modal-confirm">Eliminar</button>
+      </div>
     </div>
   </div>
 

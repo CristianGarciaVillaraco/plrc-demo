@@ -1,10 +1,19 @@
+const isMobile = () => window.matchMedia('(max-width: 767px)').matches;
+
 // ── Template selection ────────────────────────────────────────────────────────
 
-let selectedTemplate = 'classic';
+const TEMPLATE_KEY  = 'plrc_template';
+let selectedTemplate = localStorage.getItem(TEMPLATE_KEY) || 'classic';
+
+// Reflect stored preference on the buttons
+document.querySelectorAll('.template-btn').forEach(btn => {
+  btn.classList.toggle('template-btn--active', btn.dataset.template === selectedTemplate);
+});
 
 document.querySelectorAll('.template-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     selectedTemplate = btn.dataset.template;
+    localStorage.setItem(TEMPLATE_KEY, selectedTemplate);
     document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('template-btn--active'));
     btn.classList.add('template-btn--active');
   });
@@ -23,34 +32,45 @@ const invoiceId = params.get('id') ? Number(params.get('id')) : null;
 
 if (!invoiceId) { location.href = '../index.html'; }
 
+let currentIsQuote = false;
+
 // ── DOM renderer ──────────────────────────────────────────────────────────────
 
 function renderDoc(inv) {
   const isQuote = inv.type === DOC_TYPES.QUOTE;
+  currentIsQuote = isQuote;
 
   // Title + number
-  document.getElementById('doc-title').textContent = isQuote ? 'PRESUPUESTO' : 'FACTURA';
-  const numberEl = document.getElementById('doc-number');
-  if (isQuote || !inv.number) {
-    numberEl.hidden = true;
-  } else {
-    numberEl.hidden = false;
-    numberEl.textContent = `Nº ${inv.number}`;
-  }
-  document.getElementById('invoice-number').textContent = isQuote
-    ? 'Presupuesto'
-    : (inv.number || 'Factura');
+  document.getElementById('doc-number').hidden = true;
+  document.getElementById('invoice-number').textContent = isQuote ? 'Presupuesto' : 'Factura';
+  document.getElementById('doc-title').textContent = inv.number || '';
 
   // Dates
-  let datesHtml = `<div>Emisión: ${formatDate(inv.issueDate)}</div>`;
-  if (inv.dueDate) datesHtml += `<div>Vencimiento: ${formatDate(inv.dueDate)}</div>`;
+  let datesHtml = `
+    <div class="doc-date-row">
+      ${isMobile() ? '' : '<span class="doc-label">Emisión</span>'}
+      <span class="doc-val">${formatDate(inv.issueDate)}</span>
+    </div>`;
+  if (inv.dueDate) datesHtml += `
+    <div class="doc-date-row">
+      <span class="doc-label">Vencimiento</span>
+      <span class="doc-val">${formatDate(inv.dueDate)}</span>
+    </div>`;
   document.getElementById('doc-dates').innerHTML = datesHtml;
 
   // Client
-  let clientHtml = `<div class="section-label">Cliente</div>
+  let clientHtml = `<div class="doc-section-title">Cliente</div>
     <div class="doc-client__name">${inv.clientName || '—'}</div>`;
-  if (inv.clientNif)     clientHtml += `<div>${inv.clientNif}</div>`;
-  if (inv.clientAddress) clientHtml += `<div>${inv.clientAddress.replace(/\n/g, '<br>')}</div>`;
+  if (inv.clientNif) clientHtml += `<div>${inv.clientNif}</div>`;
+  if (inv.clientStreetName) {
+    const street = [inv.clientStreetType, inv.clientStreetName, inv.clientStreetNumber].filter(Boolean).join(' ');
+    const cpCity = [inv.clientCp, inv.clientCity].filter(Boolean).join(' ');
+    if (street) clientHtml += `<div>${street}</div>`;
+    if (cpCity) clientHtml += `<div>${cpCity}</div>`;
+  } else if (inv.clientAddress) {
+    clientHtml += `<div>${inv.clientAddress.replace(/\n/g, '<br>')}</div>`;
+  }
+  if (inv.clientPhone) clientHtml += `<div>${inv.clientPhone}</div>`;
   document.getElementById('doc-client').innerHTML = clientHtml;
 
   // Description / items
@@ -69,7 +89,7 @@ function renderDoc(inv) {
         </div>`;
     }).join('');
     document.getElementById('doc-description').innerHTML = `
-      <div class="section-label">Concepto</div>
+      <div class="doc-section-title">Concepto</div>
       <div class="doc-items-header">
         <span class="doc-items-row__desc">Descripción</span>
         <span class="doc-items-row__qty">Cant.</span>
@@ -79,22 +99,22 @@ function renderDoc(inv) {
       ${rowsHtml}`;
   } else {
     document.getElementById('doc-description').innerHTML =
-      `<div class="section-label">Concepto</div><div>${inv.description || ''}</div>`;
+      `<div class="doc-section-title">Concepto</div><div>${inv.description || ''}</div>`;
   }
 
   // Totals
   let totalsHtml = `
-    <div class="totals-line"><span>Base imponible</span><span>${formatAmount(inv.baseAmount)}</span></div>
-    <div class="totals-line"><span>IVA (${inv.vatRate}%)</span><span>${formatAmount(inv.vatAmount)}</span></div>
+    <div class="totals-line"><span class="doc-label">Base imponible</span><span class="doc-val">${formatAmount(inv.baseAmount)}</span></div>
+    <div class="totals-line"><span class="doc-label">IVA (${inv.vatRate}%)</span><span class="doc-val">${formatAmount(inv.vatAmount)}</span></div>
     ${inv.irpfRate > 0
-      ? `<div class="totals-line"><span>IRPF (${inv.irpfRate}%)</span><span>−${formatAmount(inv.irpfAmount)}</span></div>`
+      ? `<div class="totals-line"><span class="doc-label">IRPF (${inv.irpfRate}%)</span><span class="doc-val">−${formatAmount(inv.irpfAmount)}</span></div>`
       : ''}
     <div class="totals-line totals-line--total"><span>Total</span><span>${formatAmount(inv.total)}</span></div>
   `;
   if (!isQuote && (inv.paymentMethod || inv.iban)) {
-    totalsHtml += `<div class="doc-notes" style="border-top:none;margin-top:12px;padding-top:0;">`;
-    if (inv.paymentMethod) totalsHtml += `<div>Forma de pago: ${inv.paymentMethod}</div>`;
-    if (inv.iban)          totalsHtml += `<div>IBAN: ${inv.iban}</div>`;
+    totalsHtml += `<div class="doc-notes">`;
+    if (inv.paymentMethod) totalsHtml += `<div><span class="doc-label">Forma de pago</span> <span class="doc-val">${inv.paymentMethod}</span></div>`;
+    if (inv.iban)          totalsHtml += `<div><span class="doc-label">IBAN</span> <span class="doc-val">${inv.iban}</span></div>`;
     totalsHtml += `</div>`;
   }
   document.getElementById('doc-totals').innerHTML = totalsHtml;
@@ -107,10 +127,6 @@ function renderDoc(inv) {
   } else {
     notesEl.hidden = true;
   }
-
-  // Status badge
-  document.getElementById('status-badge').innerHTML =
-    `<span class="badge badge--${inv.status}" style="margin-bottom:10px;">${getStatusLabel(inv.status, inv.type)}</span>`;
 
   // Status buttons
   const btnsEl = document.getElementById('status-buttons');
@@ -146,7 +162,7 @@ async function changeStatus(status) {
 // ── Navigation ────────────────────────────────────────────────────────────────
 
 document.getElementById('btn-back').addEventListener('click', () => {
-  location.href = '../index.html';
+  location.href = currentIsQuote ? '../index.html?type=quote' : '../index.html';
 });
 
 document.getElementById('btn-edit').addEventListener('click', async () => {
@@ -162,10 +178,14 @@ document.getElementById('btn-edit').addEventListener('click', async () => {
 document.getElementById('btn-download').addEventListener('click', async () => {
   const inv      = await getInvoice(invoiceId);
   const docDef   = getDocDefinition(inv);
-  const filename = inv.type === DOC_TYPES.QUOTE
-    ? 'presupuesto.pdf'
-    : `factura-${inv.number}.pdf`;
+  const filename = `${inv.number}.pdf`;
   pdfMake.createPdf(docDef).download(filename);
+});
+
+document.getElementById('btn-view-pdf').addEventListener('click', async () => {
+  const inv    = await getInvoice(invoiceId);
+  const docDef = getDocDefinition(inv);
+  pdfMake.createPdf(docDef).open();
 });
 
 // ── Share ─────────────────────────────────────────────────────────────────────
@@ -176,7 +196,7 @@ if (navigator.share) {
   shareBtn.addEventListener('click', async () => {
     const inv      = await getInvoice(invoiceId);
     const docDef   = getDocDefinition(inv);
-    const filename = inv.type === DOC_TYPES.QUOTE ? 'presupuesto.pdf' : `factura-${inv.number}.pdf`;
+    const filename = `${inv.number}.pdf`;
     pdfMake.createPdf(docDef).getBlob(async (blob) => {
       const file = new File([blob], filename, { type: 'application/pdf' });
       try {

@@ -3,52 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nuevo documento — Invoice Generator</title>
+  <title>Nuevo documento — PLRC</title>
   <link rel="manifest" href="../manifest.json" />
   <meta name="theme-color" content="#2563EB" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="InvGen" />
+  <meta name="apple-mobile-web-app-title" content="PLRC" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="../icons/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/styles-mobile.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 </head>
 <body>
   <div class="demo-banner">⚠ Demo — datos ficticios · <a href="https://github.com/CristianGarciaVillaraco/plrc-demo" target="_blank" rel="noopener" style="color:inherit;font-weight:600">Ver código</a></div>
   <div class="app-shell">
-    <!-- PC sidebar (dark) -->
-    <aside class="sidebar desktop-only">
-      <div class="sidebar__brand">
-        <div class="sidebar__brand-left">
-          <div class="sidebar__brand-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10 9 9 9 8 9"/>
-            </svg>
-          </div>
-          <span class="sidebar__brand-name">InvGen</span>
-        </div>
-      </div>
-      <nav class="sidebar__nav">
-        <div class="sidebar-nav-item">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-            <polyline points="10 9 9 9 8 9"/>
-          </svg>
-          <span>Documentos</span>
-        </div>
-      </nav>
-      <div class="sidebar__footer"></div>
-    </aside>
-
-    <!-- Main content -->
     <div class="form-shell">
       <header class="form-topbar">
         <div class="form-topbar__left">
@@ -59,27 +29,63 @@
           </button>
           <h1 class="form-topbar__title" id="page-title">Nueva factura</h1>
         </div>
-        <button class="form-topbar__cancel" onclick="document.getElementById('btn-back').click()">Cancelar</button>
+        <div class="form-topbar__right">
+          <button type="submit" form="invoice-form" class="btn btn--primary btn--sm" id="btn-save" disabled>
+            <svg class="btn-save__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span class="btn-save__label">Crear factura</span>
+          </button>
+        </div>
       </header>
 
       <div class="form-layout">
-        <form id="invoice-form" novalidate>
+        <form id="invoice-form" novalidate autocomplete="off">
           <div class="form-area">
 
             <!-- Cliente -->
             <div class="form-card form-card--client">
               <p class="form-card__title">CLIENTE</p>
               <div class="form-group">
-                <label class="form-label" for="clientName">Nombre / Razón social</label>
-                <input class="input" type="text" id="clientName" name="clientName" placeholder="Empresa S.L." required />
+                <label class="form-label form-label--required" for="clientName">Nombre / Razón social</label>
+                <input class="input" type="text" id="clientName" name="clientName" placeholder="Empresa S.L." required autocomplete="off" />
               </div>
               <div class="form-group">
-                <label class="form-label" for="clientNif">NIF / CIF <span class="form-hint">(opcional)</span></label>
-                <input class="input" type="text" id="clientNif" name="clientNif" placeholder="B12345678" />
+                <label class="form-label form-label--required" for="clientNif">NIF / CIF</label>
+                <input class="input" type="text" id="clientNif" name="clientNif" placeholder="B12345678" autocomplete="off" />
+              </div>
+            </div>
+
+            <!-- Dirección -->
+            <div class="form-card form-card--address">
+              <p class="form-card__title">DIRECCIÓN</p>
+              <div class="address-grid">
+                <div class="custom-select" id="streetType-wrap">
+                  <button type="button" class="input custom-select__btn" id="streetType-btn" aria-haspopup="listbox" aria-expanded="false">
+                    <span id="streetType-display">Calle</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="custom-select__arrow" aria-hidden="true">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </button>
+                  <ul class="custom-select__dropdown" id="streetType-dropdown" role="listbox" hidden>
+                    <li class="custom-select__option custom-select__option--selected" role="option" data-value="Calle">Calle</li>
+                    <li class="custom-select__option" role="option" data-value="Avenida">Avenida</li>
+                    <li class="custom-select__option" role="option" data-value="Plaza">Plaza</li>
+                    <li class="custom-select__option" role="option" data-value="Pasaje">Pasaje</li>
+                    <li class="custom-select__option" role="option" data-value="Camino">Camino</li>
+                    <li class="custom-select__option" role="option" data-value="Carretera">Carretera</li>
+                    <li class="custom-select__option" role="option" data-value="Ronda">Ronda</li>
+                    <li class="custom-select__option" role="option" data-value="Travesía">Travesía</li>
+                    <li class="custom-select__option" role="option" data-value="Urbanización">Urbanización</li>
+                  </ul>
+                  <input type="hidden" id="clientStreetType" name="clientStreetType" value="Calle" autocomplete="off" />
+                </div>
+                <input class="input" type="text" id="clientStreetNumber" name="clientStreetNumber" placeholder="Nº / Puerta" autocomplete="new-password" />
+                <input class="input" type="text" id="clientStreetName" name="clientStreetName" placeholder="Nombre de la vía" autocomplete="new-password" />
+                <input class="input" type="text" id="clientCp" name="clientCp" placeholder="C.P." autocomplete="new-password" inputmode="numeric" />
+                <input class="input" type="text" id="clientCity" name="clientCity" placeholder="Ciudad" autocomplete="new-password" />
               </div>
               <div class="form-group">
-                <label class="form-label" for="clientAddress">Dirección <span class="form-hint">(opcional)</span></label>
-                <textarea class="input" id="clientAddress" name="clientAddress" rows="2" placeholder="Calle, número, ciudad"></textarea>
+                <label class="form-label" for="clientPhone">Teléfono <span class="form-hint">(opcional)</span></label>
+                <input class="input" type="text" id="clientPhone" name="clientPhone" placeholder="000 000 000" autocomplete="new-password" />
               </div>
             </div>
 
@@ -88,25 +94,57 @@
               <p class="form-card__title" id="section-label-meta">Factura</p>
               <div class="form-group">
                 <label class="form-label" id="label-number" for="number">Número</label>
-                <input class="input" type="text" id="number" name="number" />
+                <input class="input" type="text" id="number" name="number" disabled />
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label class="form-label" for="issueDate">Fecha emisión</label>
-                  <input class="input" type="date" id="issueDate" name="issueDate" required />
+                  <label class="form-label form-label--required" for="issueDate">Fecha emisión</label>
+                  <div class="date-input-wrap" id="issueDate-wrap">
+                    <input class="input" type="text" id="issueDate" name="issueDate" data-input placeholder="dd/mm/aaaa" required />
+                    <button type="button" class="date-toggle-btn" data-toggle tabindex="-1" aria-label="Abrir calendario">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
                 <div class="form-group">
-                  <label class="form-label" for="dueDate">Vencimiento</label>
-                  <input class="input" type="date" id="dueDate" name="dueDate" />
+                  <label class="form-label" for="dueDate">Vencimiento <span class="form-hint">(opcional)</span></label>
+                  <div class="date-input-wrap" id="dueDate-wrap">
+                    <input class="input" type="text" id="dueDate" name="dueDate" data-input placeholder="dd/mm/aaaa" />
+                    <button type="button" class="date-toggle-btn" data-toggle tabindex="-1" aria-label="Abrir calendario">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- Concepto -->
             <div class="form-card form-card--concepto">
-              <p class="form-card__title">CONCEPTO</p>
+              <div class="form-card__header">
+                <p class="form-card__title form-card__title--required">CONCEPTO</p>
+                <div class="items-toolbar">
+                  <button type="button" class="items-toolbar__btn" id="btn-add-item" aria-label="Añadir concepto">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span class="items-toolbar__label">Añadir línea</span>
+                  </button>
+                  <button type="button" class="items-toolbar__btn items-toolbar__btn--delete" id="btn-delete-mode" aria-label="Eliminar conceptos">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                  </button>
+                </div>
+              </div>
               <div class="items-table" id="items-table">
                 <div class="items-header">
+                  <span class="items-col--idx">#</span>
                   <span class="items-col--desc">Descripción</span>
                   <span class="items-col--qty">Cant.</span>
                   <span class="items-col--price">Precio u.</span>
@@ -114,14 +152,14 @@
                   <span class="items-col--del"></span>
                 </div>
                 <div id="items-body"></div>
+                <p class="items-empty" id="items-empty" hidden>Sin conceptos — pulsa "+" para añadir</p>
               </div>
-              <button type="button" class="btn btn--outline btn--full" id="btn-add-item">+ Añadir línea</button>
             </div>
 
             <!-- Cálculo -->
             <div class="form-card form-card--calc">
               <p class="form-card__title">CÁLCULO</p>
-              <div class="form-row">
+              <div class="form-cols">
                 <div class="form-group">
                   <label class="form-label" for="vatRate">IVA (%)</label>
                   <input class="input" type="number" id="vatRate" name="vatRate" min="0" max="100" step="0.1" value="21" />
@@ -143,12 +181,24 @@
             <div class="form-card form-card--pago" id="section-payment">
               <p class="form-card__title">PAGO</p>
               <div class="form-group">
-                <label class="form-label" for="paymentMethod">Forma de pago</label>
-                <input class="input" type="text" id="paymentMethod" name="paymentMethod" placeholder="Transferencia bancaria" />
+                <label class="form-label" for="paymentMethod-btn">Forma de pago</label>
+                <div class="custom-select" id="paymentMethod-wrap">
+                  <button type="button" class="input custom-select__btn" id="paymentMethod-btn" aria-haspopup="listbox" aria-expanded="false">
+                    <span id="paymentMethod-display">Transferencia bancaria</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="custom-select__arrow" aria-hidden="true">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </button>
+                  <ul class="custom-select__dropdown" id="paymentMethod-dropdown" role="listbox" hidden>
+                    <li class="custom-select__option custom-select__option--selected" role="option" data-value="Transferencia bancaria">Transferencia bancaria</li>
+                    <li class="custom-select__option" role="option" data-value="Bizum">Bizum</li>
+                  </ul>
+                  <input type="hidden" id="paymentMethod" name="paymentMethod" value="Transferencia bancaria" />
+                </div>
               </div>
               <div class="form-group">
-                <label class="form-label" for="iban">IBAN <span class="form-hint">(opcional)</span></label>
-                <input class="input" type="text" id="iban" name="iban" placeholder="ES00 0000 0000 00 0000000000" />
+                <label class="form-label">IBAN</label>
+                <div class="input input--display" id="iban-display"></div>
               </div>
             </div>
 
@@ -156,15 +206,11 @@
             <div class="form-card form-card--notes">
               <p class="form-card__title">NOTAS</p>
               <div class="form-group">
-                <label class="form-label" for="notes">Notas adicionales <span class="form-hint">(opcional)</span></label>
-                <textarea class="input" id="notes" name="notes" rows="3" placeholder="Condiciones, referencias, etc."></textarea>
+                <label class="form-label" for="notes">Notas adicionales</label>
+                <textarea class="input" id="notes" name="notes" rows="5" placeholder="Condiciones, referencias, etc." autocomplete="off"></textarea>
               </div>
             </div>
 
-            <!-- Guardar: fixed en mobile, columna derecha en PC -->
-            <div class="form-card--actions">
-              <button type="submit" class="btn btn--primary btn--full form-submit-btn" id="btn-save">Crear factura</button>
-            </div>
 
           </div>
         </form>
@@ -172,11 +218,51 @@
     </div>
   </div>
 
+  <!-- Discard changes modal -->
+  <div class="modal-overlay" id="discard-modal" hidden>
+    <div class="modal-box">
+      <h2 class="modal-title">¿Descartar cambios?</h2>
+      <p class="modal-body">Tienes cambios sin guardar. Si vuelves atrás, se perderán.</p>
+      <div class="modal-actions">
+        <button class="btn btn--outline" id="discard-modal-stay">Seguir editando</button>
+        <button class="btn btn--primary" id="discard-modal-discard">Descartar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Item modal (mobile) -->
+  <div class="modal-overlay" id="item-modal" hidden>
+    <div class="modal-box">
+      <h2 class="modal-title" id="item-modal-title">Añadir concepto</h2>
+      <div class="form-group">
+        <label class="form-label form-label--required" for="modal-item-desc">Descripción</label>
+        <input class="input" type="text" id="modal-item-desc" placeholder="Descripción del trabajo" autocomplete="off" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="modal-item-qty">Cantidad</label>
+          <input class="input" type="number" id="modal-item-qty" placeholder="1" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="modal-item-price">Precio u.</label>
+          <input class="input" type="number" id="modal-item-price" placeholder="0.00" min="0" step="0.01" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn--outline" id="item-modal-cancel">Cancelar</button>
+        <button type="button" class="btn btn--primary" id="item-modal-confirm">Añadir</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
   <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.min.js"></script>
   <script src="../js/db.js"></script>
   <script src="../js/utils/constants.js"></script>
   <script src="../js/utils/format.js"></script>
   <script src="../js/sync-config.js"></script>
+  <script src="../js/company-config.js"></script>
   <script src="../js/cloudflare.js"></script>
   <script src="../js/pages/new-document.js"></script>
 </body>

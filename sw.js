@@ -1,4 +1,4 @@
-const CACHE = 'invgen-v1';
+const CACHE = 'plrc-v8';
 const PRECACHE = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const PRECACHE = [
   './html/new-document.html',
   './html/preview.html',
   './css/styles.css',
+  './css/styles-mobile.css',
   './js/db.js',
   './js/cloudflare.js',
   './js/company-config.js',

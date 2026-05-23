@@ -1,0 +1,194 @@
+/* ── Mobile styles (< 768px) ─────────────────────────────────────────────────
+   Cargado en todos los HTMLs. Solo afecta a pantallas pequeñas.
+   Para estilos compartidos PC/móvil → styles.css
+────────────────────────────────────────────────────────────────────────────── */
+
+/* Ocultar papelera de modo borrado en PC */
+#btn-delete-mode { display: none; }
+
+/* ── Stats section (móvil) ───────────────────────────────────────────────────── */
+.stats-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: var(--border-width) solid transparent;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.stats-toggle__chevron                     { transition: transform 0.2s; }
+.stats-toggle--open                        { border-bottom-color: var(--border); }
+.stats-toggle--open .stats-toggle__chevron { transform: rotate(180deg); }
+
+/* ── Overrides generales (< 768px) ──────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Stats section container */
+  .stats-section             { background: var(--bg-card); border: var(--border-width) solid var(--border);
+                               border-radius: 12px; margin-bottom: 8px; overflow: hidden; }
+  /* Stats grid colapsable */
+  .stats-grid                { display: none; gap: 8px; margin-bottom: 0; }
+  .stats-grid--open          { display: grid; background: #F4F4F5; padding: 8px; }
+
+  .form-row                  { grid-template-columns: 1fr; }
+
+  /* Form topbar compacto */
+  .form-topbar               { height: 48px; }
+  .btn-save__label           { display: none; }
+  #btn-save                  { width: 36px; height: 36px; padding: 0; justify-content: center; }
+  .btn-save__icon            { display: block; }
+
+  /* Form cards: menos padding */
+  .form-area                 { gap: 8px; padding: 10px; }
+  .form-card                 { padding: 12px; gap: 10px; }
+
+  /* Address grid móvil: tipo+número / nombre / CP+ciudad */
+  .address-grid              { grid-template-columns: 130px 1fr; }
+  .address-grid > :nth-child(1) { grid-column: 1;     grid-row: 1; }
+  .address-grid > :nth-child(2) { grid-column: 2;     grid-row: 1; }
+  .address-grid > :nth-child(3) { grid-column: 1 / 3; grid-row: 2; }
+  .address-grid > :nth-child(4) { grid-column: 1;     grid-row: 3; }
+  .address-grid > :nth-child(5) { grid-column: 2;     grid-row: 3; }
+  .items-table               { border: none; border-radius: 0; overflow: visible; }
+  .items-header              { display: none; }
+  .items-toolbar__label      { display: none; }
+  #items-body                { max-height: calc(6 * 72px); overflow-y: auto; }
+  #btn-delete-mode           { display: flex; }
+
+  /* Dropdowns de año y mes: mismo ancho que el botón, sin desbordar */
+  .year-dropdown__panel,
+  .month-dropdown__panel     { min-width: 100%; width: max-content; right: 0; left: auto; }
+
+  /* Filter bar: 3 filas en móvil */
+  .filter-bar                { gap: 8px; }
+  .filter-search             { flex: 0 0 100%; }
+  .year-dropdown             { flex: 1; }
+  .month-dropdown            { flex: 1; }
+  .year-dropdown__trigger,
+  .month-dropdown__trigger   { width: 100%; justify-content: space-between; }
+  /* Preview: menos espacio entre bloques y padding reducido */
+  .preview-page              { gap: 8px; padding: 10px; padding-bottom: 32px; }
+  .invoice-doc               { padding: 14px; }
+  .doc-header                { padding-bottom: 10px; margin-bottom: 10px; align-items: center; }
+  .doc-client                { margin-bottom: 10px; }
+  #doc-number                { display: none; }
+
+  /* Lista de docs: scroll interno, tope ~4 cards */
+  #doc-list                  { max-height: calc(4 * 74px); overflow-y: auto;
+                               border-radius: 10px; overflow-x: hidden; }
+
+  .status-pills              { flex: 0 0 100%; display: flex; flex-wrap: nowrap;
+                               overflow-x: auto; gap: 6px;
+                               -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .status-pills::-webkit-scrollbar { display: none; }
+  .pill                      { flex-shrink: 0; padding: 4px 10px; font-size: 12px; }
+}
+
+/* ── Doc cards (listado móvil) ───────────────────────────────────────────────── */
+.doc-card {
+  background: var(--bg-card);
+  border: none;
+  border-bottom: var(--border-width) solid var(--border);
+  border-radius: 0;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.doc-card:last-child            { border-bottom: none; }
+.doc-card:active                { background: #EBEBEB; }
+.doc-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.doc-card__number               { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.doc-card__top-right            { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.doc-card__client {
+  font-size: 14px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+.doc-card__bottom               { display: flex; justify-content: space-between; align-items: center; }
+.doc-card__date                 { font-size: 12px; color: var(--text-secondary); }
+.doc-card__total                { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.doc-card__del {
+  background: none;
+  border: none;
+  padding: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+/* ── Item cards ──────────────────────────────────────────────────────────────── */
+.item-card {
+  border: var(--border-width) solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: border-color 0.15s;
+}
+.item-card:active              { border-color: var(--accent); }
+.item-card--selected           { border-color: #DC2626; background: #FEF2F2; }
+.item-card__check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #DC2626;
+}
+.item-card--selected .item-card__check { border-color: #DC2626; background: #FEE2E2; }
+.item-card__body               { flex: 1; min-width: 0; }
+.item-card__row1,
+.item-card__row2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.item-card__row2               { margin-top: 3px; }
+.item-card__desc {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.item-card__price {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.item-card__qty {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.item-card__total {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}

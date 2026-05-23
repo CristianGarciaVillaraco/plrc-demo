@@ -3,73 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vista previa — Invoice Generator</title>
+  <title>Vista previa — PLRC</title>
   <link rel="manifest" href="../manifest.json" />
   <meta name="theme-color" content="#2563EB" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="InvGen" />
+  <meta name="apple-mobile-web-app-title" content="PLRC" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="../icons/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/styles-mobile.css" />
 </head>
 <body>
   <div class="demo-banner">⚠ Demo — datos ficticios · <a href="https://github.com/CristianGarciaVillaraco/plrc-demo" target="_blank" rel="noopener" style="color:inherit;font-weight:600">Ver código</a></div>
-  <header class="topbar topbar--back">
-    <button class="btn-back" id="btn-back" aria-label="Back">&#8592;</button>
-    <h1 class="topbar__title" id="invoice-number">Documento</h1>
-    <span class="topbar__spacer"></span>
-  </header>
+  <div class="preview-shell">
+    <header class="topbar topbar--back">
+      <button class="btn-back" id="btn-back" aria-label="Atrás">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="topbar__title" id="invoice-number">Documento</h1>
+      <span class="topbar__spacer"></span>
+    </header>
 
-  <main class="preview-page">
+    <main class="preview-page">
 
-    <!-- Document preview -->
-    <div class="invoice-doc card" id="invoice-doc">
-      <div class="doc-header">
-        <div>
-          <div class="doc-header__title" id="doc-title">FACTURA</div>
-          <div class="doc-header__number" id="doc-number"></div>
+      <!-- Left: document -->
+      <div class="preview-doc-panel">
+        <div class="invoice-doc card" id="invoice-doc">
+          <div class="doc-header">
+            <div>
+              <div class="doc-header__title" id="doc-title">FACTURA</div>
+              <div class="doc-header__number" id="doc-number"></div>
+            </div>
+            <div class="doc-header__right" id="doc-dates"></div>
+          </div>
+
+          <div class="doc-client" id="doc-client"></div>
+
+          <div class="doc-description" id="doc-description"></div>
+
+          <div class="doc-totals" id="doc-totals"></div>
+
+          <div class="doc-notes" id="doc-notes" hidden></div>
         </div>
-        <div class="doc-header__right" id="doc-dates"></div>
       </div>
 
-      <div class="doc-client" id="doc-client"></div>
+      <!-- Right: controls -->
+      <div class="preview-side-panel">
 
-      <div class="doc-description" id="doc-description"></div>
+        <!-- Edit -->
+        <div class="card preview-card-pad">
+          <button class="btn btn--outline btn--full" id="btn-edit">Editar</button>
+        </div>
 
-      <div class="doc-totals" id="doc-totals"></div>
+        <!-- Status -->
+        <div class="card status-section">
+          <p class="section-label">Estado</p>
+          <div class="status-buttons" id="status-buttons"></div>
+        </div>
 
-      <div class="doc-notes" id="doc-notes" hidden></div>
-    </div>
+        <!-- Template -->
+        <div class="card template-selector">
+          <p class="section-label">Plantilla</p>
+          <div class="template-buttons">
+            <button class="btn btn--outline template-btn template-btn--active" data-template="classic">Clásica</button>
+            <button class="btn btn--outline template-btn" data-template="modern">Moderna</button>
+          </div>
+          <button class="btn btn--outline btn--full" id="btn-view-pdf" style="margin-top:10px">Ver PDF</button>
+        </div>
 
-    <!-- Status -->
-    <div class="card status-section">
-      <p class="section-label">Estado</p>
-      <div id="status-badge"></div>
-      <div class="status-buttons" id="status-buttons"></div>
-    </div>
+        <!-- Download / Share -->
+        <div class="card preview-actions-card">
+          <button class="btn btn--primary btn--full" id="btn-download">Descargar PDF</button>
+          <button class="btn btn--primary btn--full" id="btn-share" hidden>Compartir</button>
+        </div>
 
-    <!-- Template selector -->
-    <div class="card template-selector">
-      <p class="section-label">Plantilla</p>
-      <div class="template-buttons">
-        <button class="btn btn--outline template-btn template-btn--active" data-template="classic">Clásica</button>
-        <button class="btn btn--outline template-btn" data-template="modern">Moderna</button>
       </div>
-    </div>
 
-    <!-- Actions -->
-    <div class="preview-actions">
-      <button class="btn btn--outline" id="btn-edit">Editar</button>
-      <button class="btn btn--primary" id="btn-download">Descargar PDF</button>
-    </div>
-
-    <div class="preview-actions">
-      <button class="btn btn--outline btn--full" id="btn-share" hidden>Compartir</button>
-    </div>
-
-  </main>
+    </main>
+  </div>
 
   <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.min.js"></script>
   <script src="https://unpkg.com/pdfmake@0.2.10/build/pdfmake.min.js"></script>
